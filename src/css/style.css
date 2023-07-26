@@ -1,0 +1,284 @@
+:root {
+  --colorBack: rgb(201, 197, 197);
+}
+
+button {
+  cursor: pointer;
+}
+
+body {
+  color: rgb(8, 8, 8);
+  background-color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.trello {
+  width: 100vw;
+  height: 100vh;
+  background: #3d9ad6
+}
+
+.trello__body {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.trello__content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.col {
+  margin: 10px;
+  width: 32%;
+  background-color: var(--colorBack);
+  border-radius: 7px;
+}
+
+.col__header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+}
+
+.col__content {
+  min-height: 153px;
+  padding: 20px;
+  background-color: var(--colorBack);
+}
+
+.col__footer {
+  position: relative;
+  height: 80px;
+}
+
+.col__menu {
+  width: 20px;
+  height: 20px;
+  margin: 15px;
+  border: none;   
+  background-color: var(--colorBack);
+  background-image: url('../img/more1.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  color: #7e7d7d;
+  
+}
+
+.col__menu:hover {
+  background-image: url('../img/more.png');
+}
+
+.col__menu:hover {
+  color: #575656;
+}
+
+.col__add {
+  position: absolute;
+  bottom: 18px;
+  left: 25px;
+  border: none;
+  background-color: var(--colorBack);
+  font-size: 18px;
+  font-weight: 700;
+  color: #787474;
+}
+
+.col__add:hover {
+  border-bottom: 3px solid #575656;
+  color: #575656;
+}
+
+.col__adding {
+  position: absolute;
+}
+
+.add {
+  width: calc(100% - 40px);
+}
+
+.add__textarea {
+ box-sizing: border-box;
+ width: 100%
+}
+
+.add__controls {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  bottom: -5px;
+  left: 13px;
+  padding: 0;
+  margin: 0 30px 0 0;
+}
+
+.add__textarea {
+  width: 533px;
+  min-height: 100px;
+  position: absolute;
+  top: -128px;
+  margin: 20px;
+  padding: 10px;
+  box-sizing: border-box;
+  resize: none;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.d_none {
+  display: none;
+}
+
+.add__button {
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a743;
+  color: #ffffff;
+  font-size: 20px;
+}
+
+.add__button:hover {
+  background-color: #0a4116;
+}
+
+.add__btn {
+  border: none;
+  background-color: var(--colorBack);
+  margin: 15px;
+  font-size: 18px;
+  font-weight: 700;
+  color: grey;
+}
+
+.add__btn:hover {
+  color: #d10909;
+}
+
+.errorForm {
+  position: absolute;
+  top: 0px;
+  right: 133px;
+  width: 250px;
+  height: 35px;
+  background: #4a4a4a;
+  border: 1px solid white;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.text {
+  color: white;
+  margin: 0;
+  padding: 9px;
+}
+
+.card {
+  position: relative;
+  padding: 10px;
+  margin-bottom: 25px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0/16%), 0 2px 10px 0 rgb(0 0 0/12%); 
+}
+
+.card__delete {
+  position: absolute;
+  right: 7px;
+  background-color: #ffffff;
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  color:  rgb(61, 60, 60);
+}
+
+.card__delete:hover {
+  color:  rgb(226, 11, 11);
+}
+
+.card__text {
+  margin-bottom: 10px;
+  width: 400px;
+}
+
+.card__subBtn {
+  height: 20px;
+  width: 20px;
+  border: none;
+  background-image: url(../img/burger.png);
+  background-color: #ffffff;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+ 
+}
+
+.card__subMenu {
+  margin-left: 15px;
+  position: relative;
+}
+
+.subMenu__item {
+  margin-right: 25px;
+}
+
+.like {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background-image: url(../img/like.png);
+  background-color: #ffffff;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.unlike {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background-image: url(../img/unlike1.png);
+  background-color: #ffffff;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.message {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background-image: url(../img/chat.png);
+  background-color: #ffffff;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.col__card.dragged {
+  border-radius: 10px;
+  position: absolute;
+  z-index: 999;
+  pointer-events: none;
+  background: #ffffff;
+}
+
+.dragged {
+  position: absolute;
+  pointer-events: none;
+  font-size: 16px;
+  border: 1px solid #000;
+  transform: rotate(5deg);
+}
+
+
+
+
+
+
+
