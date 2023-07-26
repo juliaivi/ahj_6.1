@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/2c02mjp2veb1nvp3?svg=true)](https://ci.appveyor.com/project/juliaivi/ahj-6-1)
+[![Build status](https://ci.appveyor.com/api/projects/status/8i5ctmcr1d9cst9m?svg=true)](https://ci.appveyor.com/project/juliaivi/ahj-6-1)
 # Домашнее задание к занятию "6. Работа с файлами, DnD"
 
 Правила сдачи задания:
