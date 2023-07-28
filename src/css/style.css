@@ -268,13 +268,21 @@ body {
   background: #ffffff;
 }
 
-.dragged {
+.drag {
   position: absolute;
+  z-index: 999;
   pointer-events: none;
-  font-size: 16px;
-  border: 1px solid #000;
-  transform: rotate(5deg);
+  cursor: grabbing;
 }
+
+.ghost , .ghost button {
+  background: #dddddd !important;
+  box-shadow: none !important;
+  color: #dddddd !important;
+  pointer-events: none !important;
+}
+
+
 
 
 

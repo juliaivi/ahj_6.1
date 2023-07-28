@@ -31,67 +31,20 @@ export default class Trello {
   }
 
   onMouseUp(e) {
-    let elemBelow = document.elementFromPoint(e.clientX, e.clientY);
-    const colNew = e.target.closest('.col__content'); // новая кол
-
-    if (!this.actualElement) {
-      return;
-    }
-
-    this.cloneActualElement = this.actualElement.cloneNode(true);
-    const colOld = this.actualElement.closest('.col__content'); // стар. кол
-    if (this.cloneActualElement) {
-      document.body.style.cursor = 'grabbing';
-    }
-
-    let target = elemBelow.closest('.col__card');
-
-    if (!elemBelow.closest('.trello__content') || elemBelow.classList.contains('trello__content')) {
-      colOld.append(this.cloneActualElement);
-    }
-
-    if (elemBelow.closest('.col__header')) {
-      this.colContentEl = elemBelow.closest('.trello__col').querySelector('.col__content');
-      this.colContentEl.insertBefore(this.cloneActualElement, this.colContentEl.firstElementChild);
-    }
-
-    if (elemBelow.closest('.col__footer')) {
-      this.colContentEl = elemBelow.closest('.trello__col').querySelector('.col__content');
-      this.colContentEl.append(this.cloneActualElement);
-    }
-
-    if (colNew) {
-      if (!target && !colNew.hasChildNodes()) {
-        colNew.append(this.cloneActualElement);
-      }
-
-      if (!target && colNew.hasChildNodes()) {
-        elemBelow = document.elementFromPoint(e.clientX, e.clientY + 50);
-        target = elemBelow.closest('.col__card');
-      }
-
-      if (!target && colNew.hasChildNodes()) {
-        colNew.append(this.cloneActualElement);
-      }
-      if (target && target.getAttribute('data-cardId') !== this.actualElement.getAttribute('data-cardId')) {
-        colNew.insertBefore(this.cloneActualElement, elemBelow.closest('.col__card'));
-      }
-    }
-
-    const columOldAttribut = this.actualElement.closest('.trello__col').getAttribute('data-name');// номер колонки старый
-
+    this.cloneActualElement.classList.remove('ghost');
     this.actualElement.remove();
     this.actualElement = this.cloneActualElement;
     this.cloneActualElement = null;
     this.actualElement.classList.remove('dragged');
-    this.actualElement.style.top = `${0}px`;
-    this.actualElement.style.left = `${0}px`;
     const dataCardId = this.actualElement.getAttribute('data-cardId');// СardId
     this.hoverCard(dataCardId);
+    const trelloColOld = this.colOld.closest('.trello__col');
+    const columOldAttribut = trelloColOld.getAttribute('data-name');
+
     if (e.target.closest('.trello__col')) {
       this.columNewAttribute = e.target.closest('.trello__col').getAttribute('data-name');
     } else {
-      this.columNewAttribute = columOldAttribut;
+      this.columNewAttribute = trelloColOld.getAttribute('data-name');
     }
 
     const colls = Array.from(this.actualElement.closest('.trello__col').querySelectorAll('.col__card'));
@@ -99,8 +52,10 @@ export default class Trello {
     const deleteItemIndex = this.data[columOldAttribut].findIndex((item) => item.id == dataCardId);
     this.data[columOldAttribut].splice(deleteItemIndex, 1);
     // новая позиция
+
     const addItemIndex = colls.findIndex((item) => item.getAttribute('data-cardId') == dataCardId);
     const text = this.actualElement.querySelector('.card__text').textContent.trim();
+
     this.data[this.columNewAttribute].splice(addItemIndex, 0, { id: dataCardId, text });
 
     this.actualElement = undefined;
@@ -108,6 +63,7 @@ export default class Trello {
     if (!this.actualElement || this.cloneActualElement === null) {
       document.body.style.cursor = 'auto';
     }
+
     this.saveData();
     document.documentElement.removeEventListener('mouseup', this.onMouseUp);
     document.documentElement.removeEventListener('mousemove', this.onMouseMove);
@@ -117,6 +73,39 @@ export default class Trello {
     if (this.actualElement) {
       this.actualElement.style.top = `${e.pageY - this.y}px`;
       this.actualElement.style.left = `${e.pageX - this.x}px`;
+    }
+
+    const newCol = e.target;
+
+    // если это контейнер с колонками или мы находимся за его приделами
+    if (!newCol.closest('.trello__content') || newCol.classList.contains('trello__content')) {
+      this.colOld.append(this.cloneActualElement);
+    }
+    // попали на шапку колонки, отрисовываем сверху элемент
+    if (newCol.closest('.col__header')) {
+      this.colContentEl = newCol.closest('.trello__col').querySelector('.col__content');
+      this.colContentEl.insertBefore(this.cloneActualElement, this.colContentEl.firstElementChild);
+    }
+    // попали на подвал колонки, отрисовываем снизу элемент
+    if (newCol.closest('.col__footer')) {
+      this.colContentEl = newCol.closest('.trello__col').querySelector('.col__content');
+      this.colContentEl.append(this.cloneActualElement);
+    }
+
+    // если это контейнер в котором хранятся сообщения
+    const colContent = e.target.closest('.col__content');
+    if (colContent) {
+      if (colContent.hasChildNodes()) { // если это новая колонка пустая записываем в конец элемент
+        colContent.append(this.cloneActualElement);
+      }
+    }
+    // если навели на сообщение
+    if (e.target.closest('.col__card')) {
+      if (e.target.closest('.col__card')) {
+        if (e.target.closest('.col__card').getAttribute('data-cardId') !== this.actualElement.getAttribute('data-cardId')) {
+          colContent.insertBefore(this.cloneActualElement, e.target.closest('.col__card'));
+        }
+      }
     }
   }
 
@@ -133,12 +122,14 @@ export default class Trello {
 
     if (e.target.classList.contains('col__card')) {
       this.actualElement = e.target.closest('.col__card');
+      this.colOld = this.actualElement.closest('.col__content');// ...........контейнер старый
+
+      this.cloneActualElement = this.actualElement.cloneNode(true);
       const positionActualElement = this.actualElement.getBoundingClientRect();
       this.x = e.clientX - positionActualElement.left;
       this.y = e.clientY - positionActualElement.top;
-      this.actualElement.style.left = `${positionActualElement.left}px`;
-      this.actualElement.style.top = `${positionActualElement.top}px`;
-      this.actualElement.classList.add('dragged');
+      this.cloneActualElement.classList.add('ghost');
+      this.actualElement.classList.add('drag');
       this.actualElement.style.width = `${positionActualElement.width - 20}px`;
       document.body.style.cursor = 'grabbing';
 
