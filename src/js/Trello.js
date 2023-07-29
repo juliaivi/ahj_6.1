@@ -17,6 +17,7 @@ export default class Trello {
     this.x = null;
     this.y = null;
     this.count = 0;
+    this.ghost = false;
 
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -70,6 +71,23 @@ export default class Trello {
   }
 
   onMouseMove(e) {
+    const mousX = e.pageX;
+    const mousY = e.pageY;
+
+    console.log(e.pageX)
+    console.log(e.pageY)
+    const ghost = document.querySelector('.ghost');
+    if (ghost) {
+      const coordinatesGhost = ghost.getBoundingClientRect();
+      if (coordinatesGhost.left <= mousX || mousX <= coordinatesGhost.right) {
+        return;
+      }
+
+      if (coordinatesGhost.top <= mousY || mousY <= coordinatesGhost.bottom) {
+        return;
+      }
+    }
+
     if (this.actualElement) {
       this.actualElement.style.top = `${e.pageY - this.y}px`;
       this.actualElement.style.left = `${e.pageX - this.x}px`;
@@ -95,16 +113,36 @@ export default class Trello {
     // если это контейнер в котором хранятся сообщения
     const colContent = e.target.closest('.col__content');
     if (colContent) {
-      if (colContent.hasChildNodes()) { // если это новая колонка пустая записываем в конец элемент
+      if (colContent.hasChildNodes()) {
+        // если это новая колонка пустая записываем в конец элемент
         colContent.append(this.cloneActualElement);
       }
     }
-    // если навели на сообщение
+
+    // const ghost = document.querySelector('.ghost');
+
+    // if (ghost) {
+    //   const coordinatesGhost = ghost.getBoundingClientRect();
+    //   if (coordinatesGhost.left <= mousX || mousX <= coordinatesGhost.right) {
+    //     return;
+    //   }
+
+    //   if (coordinatesGhost.top <= mousY || mousY <= coordinatesGhost.bottom) {
+    //     return;
+    //   }
+    // }
+    //  вот проверка это я по памяти вам написала быстро незнаю могут быть ошибки, но недолжно. Но он не видит фантом(((
+    // if (e.target.closest('.ghost')) {
+    //   return;
+    // }
+    // if (e.target.classList.contains('.ghost')) {
+    //   return;
+    // }
+
     if (e.target.closest('.col__card')) {
-      if (e.target.closest('.col__card')) {
-        if (e.target.closest('.col__card').getAttribute('data-cardId') !== this.actualElement.getAttribute('data-cardId')) {
-          colContent.insertBefore(this.cloneActualElement, e.target.closest('.col__card'));
-        }
+      if (e.target.closest('.col__card').getAttribute('data-cardId') !== this.actualElement.getAttribute('data-cardId')) {
+        this.position = e.target.closest('.col__card');
+        colContent.insertBefore(this.cloneActualElement, e.target.closest('.col__card'));
       }
     }
   }
