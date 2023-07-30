@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack --mode development",
     "start": "webpack server --mode development  --open",
-    "build": "webpack server --mode production",
+    "build": "webpack --mode production",
     "babel": "babel src -d dist",
     "lint": "eslint .",
     "test": "jest --coverage",
