@@ -17,7 +17,6 @@ export default class Trello {
     this.x = null;
     this.y = null;
     this.count = 0;
-    this.ghost = false;
 
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -71,79 +70,45 @@ export default class Trello {
   }
 
   onMouseMove(e) {
-    const mousX = e.pageX;
-    const mousY = e.pageY;
-
-    console.log(e.pageX)
-    console.log(e.pageY)
-    const ghost = document.querySelector('.ghost');
-    if (ghost) {
-      const coordinatesGhost = ghost.getBoundingClientRect();
-      if (coordinatesGhost.left <= mousX || mousX <= coordinatesGhost.right) {
-        return;
-      }
-
-      if (coordinatesGhost.top <= mousY || mousY <= coordinatesGhost.bottom) {
-        return;
-      }
-    }
-
     if (this.actualElement) {
       this.actualElement.style.top = `${e.pageY - this.y}px`;
       this.actualElement.style.left = `${e.pageX - this.x}px`;
     }
-
-    const newCol = e.target;
-
-    // если это контейнер с колонками или мы находимся за его приделами
-    if (!newCol.closest('.trello__content') || newCol.classList.contains('trello__content')) {
-      this.colOld.append(this.cloneActualElement);
+    if (!this.actualElement) {
+      return;
     }
-    // попали на шапку колонки, отрисовываем сверху элемент
+    const newCol = e.target;
+    const colContent = e.target.closest('.col__content');
+
+    if (e.target.closest('.col__content')) {
+      if (e.target.closest('.col__content').children.length == 0) {
+        colContent.append(this.cloneActualElement);
+      }
+      if (e.target.closest('.col__card')) {
+        if (e.target.closest('.col__card').getAttribute('data-cardId') !== this.actualElement.getAttribute('data-cardId')) {
+          colContent.insertBefore(this.cloneActualElement, e.target.closest('.col__card'));
+        }
+      }
+
+      const lastElement = e.target.closest('.col__content').lastElementChild;
+      const { bottom } = lastElement.getBoundingClientRect();
+      if (e.pageY > bottom) {
+        colContent.append(this.cloneActualElement);
+      }
+    }
+
     if (newCol.closest('.col__header')) {
       this.colContentEl = newCol.closest('.trello__col').querySelector('.col__content');
       this.colContentEl.insertBefore(this.cloneActualElement, this.colContentEl.firstElementChild);
     }
-    // попали на подвал колонки, отрисовываем снизу элемент
+
     if (newCol.closest('.col__footer')) {
       this.colContentEl = newCol.closest('.trello__col').querySelector('.col__content');
       this.colContentEl.append(this.cloneActualElement);
     }
 
-    // если это контейнер в котором хранятся сообщения
-    const colContent = e.target.closest('.col__content');
-    if (colContent) {
-      if (colContent.hasChildNodes()) {
-        // если это новая колонка пустая записываем в конец элемент
-        colContent.append(this.cloneActualElement);
-      }
-    }
-
-    // const ghost = document.querySelector('.ghost');
-
-    // if (ghost) {
-    //   const coordinatesGhost = ghost.getBoundingClientRect();
-    //   if (coordinatesGhost.left <= mousX || mousX <= coordinatesGhost.right) {
-    //     return;
-    //   }
-
-    //   if (coordinatesGhost.top <= mousY || mousY <= coordinatesGhost.bottom) {
-    //     return;
-    //   }
-    // }
-    //  вот проверка это я по памяти вам написала быстро незнаю могут быть ошибки, но недолжно. Но он не видит фантом(((
-    // if (e.target.closest('.ghost')) {
-    //   return;
-    // }
-    // if (e.target.classList.contains('.ghost')) {
-    //   return;
-    // }
-
-    if (e.target.closest('.col__card')) {
-      if (e.target.closest('.col__card').getAttribute('data-cardId') !== this.actualElement.getAttribute('data-cardId')) {
-        this.position = e.target.closest('.col__card');
-        colContent.insertBefore(this.cloneActualElement, e.target.closest('.col__card'));
-      }
+    if (!newCol.closest('.trello__content') || newCol.classList.contains('trello__content')) {
+      this.colOld.append(this.cloneActualElement);
     }
   }
 
@@ -152,13 +117,14 @@ export default class Trello {
 
     if (e.target.classList.contains('card__delete') || e.target.classList.contains('card__subBtn')) {
       this.clickButtomForm(e);
+      return;
     }
 
     if (e.target.classList.contains('card__text')) {
       return;
     }
 
-    if (e.target.classList.contains('col__card')) {
+    if (e.target.closest('.col__card')) {
       this.actualElement = e.target.closest('.col__card');
       this.colOld = this.actualElement.closest('.col__content');// ...........контейнер старый
 
@@ -240,6 +206,10 @@ export default class Trello {
   }
 
   outhoverCard(e) {
+    const allCardDelete = document.querySelectorAll('.card__delete');
+    allCardDelete.forEach((el) => {
+      el.classList.add('d_none');
+    });
     const element = e.currentTarget;
     const cardDelete = element.querySelector('.card__delete');
     const buttonDnone = element.classList.contains('d_none');

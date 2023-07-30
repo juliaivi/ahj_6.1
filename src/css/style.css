@@ -27,7 +27,6 @@ body {
 .trello__body {
   display: flex;
   flex-direction: column;
-  padding: 20px;
 }
 
 .trello__content {
@@ -40,6 +39,7 @@ body {
   width: 32%;
   background-color: var(--colorBack);
   border-radius: 7px;
+  padding: 20px;
 }
 
 .col__header {
@@ -50,7 +50,6 @@ body {
 
 .col__content {
   min-height: 153px;
-  padding: 20px;
   background-color: var(--colorBack);
 }
 
@@ -92,7 +91,7 @@ body {
 }
 
 .col__add:hover {
-  border-bottom: 3px solid #575656;
+  text-decoration: underline 2px;
   color: #575656;
 }
 
@@ -120,11 +119,9 @@ body {
 }
 
 .add__textarea {
-  width: 533px;
   min-height: 100px;
   position: absolute;
   top: -128px;
-  margin: 20px;
   padding: 10px;
   box-sizing: border-box;
   resize: none;
