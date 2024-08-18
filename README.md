@@ -1,6 +1,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/8i5ctmcr1d9cst9m?svg=true)](https://ci.appveyor.com/project/juliaivi/ahj-6-1)
 # Домашнее задание к занятию "6. Работа с файлами, DnD"
-
+https://juliaivi.github.io/ahj_6.1/
 Правила сдачи задания:
 
 1. **Важно**: в рамках этого ДЗ нужно использовать yarn (поэтому файла `package-lock.json` в репозитории быть не должно)
